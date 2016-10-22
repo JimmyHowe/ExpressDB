@@ -1,26 +1,53 @@
 package com.jimmyhowe.db.connections;
 
+import com.jimmyhowe.db.Expression;
 import com.jimmyhowe.db.connections.adapters.Adapter;
 import com.jimmyhowe.support.contracts.Cleanable;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * Handles the Database Connection
  */
 public class Connector implements Cleanable
 {
+    /**
+     * Automatically Connect
+     */
     public static boolean autoConnect = true;
+
+    /**
+     * Automatically Close Connections
+     */
     public static boolean autoClose = true;
+
+    /**
+     * Java SQL Connection
+     */
     private java.sql.Connection connection = null;
+
+    /**
+     * Java SQL Statement
+     */
     private java.sql.Statement statement = null;
+
+    /**
+     * Java Result Set
+     */
     private java.sql.ResultSet resultSet = null;
+
+    /**
+     * Connection Adapter
+     */
     private Adapter adapter;
 
     /**
      * Initializes the Connector
      *
-     * @param adapter
+     * @param adapter Adapter
      */
     public Connector(Adapter adapter)
     {
@@ -30,7 +57,7 @@ public class Connector implements Cleanable
     /**
      * Connects with an Adapter
      *
-     * @param adapter
+     * @param adapter Adapter
      */
     public Connector connectWithAdapter(Adapter adapter)
     {
@@ -40,12 +67,14 @@ public class Connector implements Cleanable
     /**
      * Connects to the database using an adapter
      *
-     * @param adapter
+     * @param adapter Adapter
      */
     private Connector connect(Adapter adapter)
     {
         try
         {
+            // TODO: Null pointer exception when no adapter set
+
             connection = DriverManager.getConnection(adapter.buildUrl());
 
         } catch ( SQLException e )
@@ -59,13 +88,14 @@ public class Connector implements Cleanable
     /**
      * Runs a SQL query against the connection
      *
-     * @param query
+     * @param query Query String
      */
     public ResultSet run(String query)
     {
-        this.closeStatement();
-        this.closeResultSet();
-
+        /*
+            If auto-connecting then connect the adapter,
+            else return null
+         */
         if ( autoConnect )
         {
             this.connect(this.adapter);
@@ -74,6 +104,9 @@ public class Connector implements Cleanable
             return null;
         }
 
+        /*
+            Try run the query
+         */
         try
         {
             statement = connection.createStatement();
@@ -92,92 +125,20 @@ public class Connector implements Cleanable
         return null;
     }
 
+    /**
+     * Returns the Connection
+     *
+     * @return Returns the Connection
+     */
     public Connection getConnection()
     {
         return connection;
     }
 
-    public Statement getStatement()
-    {
-        return statement;
-    }
-
-    public ResultSet getResultSet()
-    {
-        return resultSet;
-    }
-
-    /**
-     * Cleans up all the connection data
-     */
-    public void cleanUp()
-    {
-        closeResultSet();
-
-        closeStatement();
-
-        closeConnection();
-    }
-
-    /**
-     * Close the Results Set
-     */
-    private void closeResultSet()
-    {
-        if ( resultSet != null )
-        {
-            try
-            {
-                resultSet.close();
-            } catch ( SQLException e )
-            {
-                printErrors(e);
-            }
-
-            resultSet = null;
-        }
-    }
-
-    /**
-     * Close the Statement
-     */
-    private void closeStatement()
-    {
-        if ( statement != null )
-        {
-            try
-            {
-                statement.close();
-            } catch ( SQLException e )
-            {
-                printErrors(e);
-            }
-
-            statement = null;
-        }
-    }
-
-    /**
-     * Close the Connection
-     */
-    private void closeConnection()
-    {
-        if ( connection != null )
-        {
-            try
-            {
-                connection.close();
-            } catch ( SQLException e )
-            {
-                printErrors(e);
-            }
-
-            connection = null;
-        }
-    }
-
     /**
      * Returns the Adapter
+     *
+     * @return Returns the Adapter
      */
     public Adapter getAdapter()
     {
@@ -187,12 +148,53 @@ public class Connector implements Cleanable
     /**
      * Prints the SQL Exception Errors to the console
      *
-     * @param e
+     * @param e SQL Exception
      */
     private void printErrors(SQLException e)
     {
         System.out.println("SQLException: " + e.getMessage());
         System.out.println("SQLState: " + e.getSQLState());
         System.out.println("VendorError: " + e.getErrorCode());
+    }
+
+    /**
+     * Clean Up
+     */
+    public void cleanUp()
+    {
+        if ( resultSet != null )
+        {
+            try
+            {
+                resultSet.close();
+            } catch ( SQLException e )
+            { /* ignored */}
+        }
+        if ( statement != null )
+        {
+            try
+            {
+                statement.close();
+            } catch ( SQLException e )
+            { /* ignored */}
+        }
+        if ( connection != null )
+        {
+            try
+            {
+                connection.close();
+            } catch ( SQLException e )
+            { /* ignored */}
+        }
+    }
+
+    /**
+     * @param sql SQL String
+     *
+     * @return Raw SQL Expression
+     */
+    public Expression raw(String sql)
+    {
+        return new Expression(sql);
     }
 }

@@ -38,12 +38,22 @@ public class Column
         return field;
     }
 
+    public void setField(String field)
+    {
+        this.field = field;
+    }
+
     /**
      * Returns the MySQL Type
      */
     public String getSqlType()
     {
         return sqlType;
+    }
+
+    public void setSqlType(String sqlType)
+    {
+        this.sqlType = sqlType;
     }
 
     /**
@@ -57,7 +67,7 @@ public class Column
     /**
      * Sets the Value
      *
-     * @param value
+     * @param value The Column Value
      */
     public void setValue(Object value)
     {
@@ -66,22 +76,10 @@ public class Column
 
     /**
      * Return the Cast Type
-     *
-     * @return
      */
     public Class getCastType()
     {
         return castType;
-    }
-
-    public void setField(String field)
-    {
-        this.field = field;
-    }
-
-    public void setSqlType(String sqlType)
-    {
-        this.sqlType = sqlType;
     }
 
     public void use(Map<String, Class> TYPE)

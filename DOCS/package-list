@@ -1,0 +1,11 @@
+com.jimmyhowe.db
+com.jimmyhowe.db.connections
+com.jimmyhowe.db.connections.adapters
+com.jimmyhowe.db.contracts
+com.jimmyhowe.db.processors
+com.jimmyhowe.db.queries
+com.jimmyhowe.db.queries.components
+com.jimmyhowe.db.queries.statements
+com.jimmyhowe.db.tables
+com.jimmyhowe.db.tables.columns
+com.jimmyhowe.db.tables.rows

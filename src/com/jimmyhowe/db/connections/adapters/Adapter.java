@@ -1,7 +1,9 @@
 package com.jimmyhowe.db.connections.adapters;
 
 /**
- * MySQL Adapter for holding the connection url
+ * MySQL Adapter
+ *
+ * Used to connect to MySQL drivers
  */
 public class Adapter
 {
@@ -16,10 +18,10 @@ public class Adapter
     /**
      * Connect using all parameters
      *
-     * @param url
-     * @param database
-     * @param user
-     * @param password
+     * @param url      Adapter URL
+     * @param database Database Name
+     * @param user     User Name
+     * @param password Password
      */
     public Adapter(String url, String database, String user, String password)
     {
@@ -32,9 +34,9 @@ public class Adapter
     /**
      * Connect using the default driver url
      *
-     * @param database
-     * @param user
-     * @param password
+     * @param database Database Name
+     * @param user     User Name
+     * @param password Password
      */
     public Adapter(String database, String user, String password)
     {
@@ -46,7 +48,7 @@ public class Adapter
     /**
      * Connect with Root and Null password
      *
-     * @param database
+     * @param database Database Name
      */
     public Adapter(String database)
     {
@@ -56,7 +58,7 @@ public class Adapter
     }
 
     /**
-     * @return
+     * @return Returns the URL
      */
     public String getUrl()
     {
@@ -64,7 +66,7 @@ public class Adapter
     }
 
     /**
-     * @param url
+     * @param url The URL
      */
     public void setUrl(String url)
     {
@@ -72,7 +74,7 @@ public class Adapter
     }
 
     /**
-     * @return
+     * @return Returns the Database Name
      */
     public String getDatabase()
     {
@@ -80,7 +82,7 @@ public class Adapter
     }
 
     /**
-     * @param database
+     * @param database The Database Name
      */
     public void setDatabase(String database)
     {
@@ -88,7 +90,7 @@ public class Adapter
     }
 
     /**
-     * @return
+     * @return Returns the User Name
      */
     public String getUser()
     {
@@ -96,7 +98,7 @@ public class Adapter
     }
 
     /**
-     * @param user
+     * @param user The User Name
      */
     public void setUser(String user)
     {
@@ -104,7 +106,7 @@ public class Adapter
     }
 
     /**
-     * @return
+     * @return Returns the Password
      */
     public String getPassword()
     {
@@ -112,7 +114,7 @@ public class Adapter
     }
 
     /**
-     * @param password
+     * @param password The Password
      */
     public void setPassword(String password)
     {

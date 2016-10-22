@@ -12,12 +12,12 @@ public class WhereTest
     @Test
     public void it_can_build_simple_where() throws Exception
     {
-        assertEquals("WHERE id = '1'", new Where("id", 1).toString());
+        assertEquals("id = '1'", new Where("id", 1).toString());
     }
 
     @Test
     public void it_can_build_full_where() throws Exception
     {
-        assertEquals("WHERE id > '1'", new Where("id", ">", 1).toString());
+        assertEquals("id > '1'", new Where("id", ">", 1).toString());
     }
 }

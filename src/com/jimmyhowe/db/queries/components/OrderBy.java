@@ -6,6 +6,7 @@ package com.jimmyhowe.db.queries.components;
 public class OrderBy
 {
     private final String column;
+
     private final String direction;
 
     public OrderBy(String column, String direction)

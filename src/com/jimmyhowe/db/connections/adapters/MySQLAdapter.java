@@ -1,17 +1,17 @@
 package com.jimmyhowe.db.connections.adapters;
 
 /**
- * Created by Jimmy on 10/09/2016.
+ * MySQL Adapter
  */
 public class MySQLAdapter extends Adapter
 {
     /**
      * Connect using all parameters
      *
-     * @param url
-     * @param database
-     * @param user
-     * @param password
+     * @param url      Driver URL
+     * @param database Database Name
+     * @param user     User Name
+     * @param password Password
      */
     public MySQLAdapter(String url, String database, String user, String password)
     {
@@ -21,9 +21,9 @@ public class MySQLAdapter extends Adapter
     /**
      * Connect using the default driver url
      *
-     * @param database
-     * @param user
-     * @param password
+     * @param database Database Name
+     * @param user     User Name
+     * @param password Password
      */
     public MySQLAdapter(String database, String user, String password)
     {
@@ -33,7 +33,7 @@ public class MySQLAdapter extends Adapter
     /**
      * Connect with Root and Null password
      *
-     * @param database
+     * @param database Database Name
      */
     public MySQLAdapter(String database)
     {

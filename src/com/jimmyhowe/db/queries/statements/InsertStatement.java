@@ -1,17 +1,24 @@
 package com.jimmyhowe.db.queries.statements;
 
+import com.jimmyhowe.db.DB;
 import com.jimmyhowe.db.connections.Connector;
 import com.jimmyhowe.db.processors.PostProcessor;
 import com.jimmyhowe.db.queries.QueryBuilder;
 import com.jimmyhowe.support.stores.ValueStore;
 
 /**
- * Created by Jimmy on 27/09/2016.
+ * Insert Statement Object
  */
 public class InsertStatement extends Statement
 {
+    /**
+     * Insert Columns
+     */
     private ValueStore columns;
 
+    /**
+     * Insert Values
+     */
     private ValueStore values;
 
     /**
@@ -23,7 +30,6 @@ public class InsertStatement extends Statement
     {
         super(connector, queryBuilder, processor);
     }
-
 
 
     /**
@@ -42,12 +48,19 @@ public class InsertStatement extends Statement
 
         sql = sql + values.addQuotes().toWrappedInBraces();
 
-//        DB.log(sql);
+        DB.log(sql);
 
         return sql;
     }
 
-    public Object values(Object... values)
+    /**
+     * Add the values
+     *
+     * @param values Values
+     *
+     * @return SQL Statement
+     */
+    public String values(Object... values)
     {
         this.values = new ValueStore(values);
 

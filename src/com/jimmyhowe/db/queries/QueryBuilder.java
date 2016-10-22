@@ -1,12 +1,17 @@
 package com.jimmyhowe.db.queries;
 
+import com.jimmyhowe.db.Expression;
 import com.jimmyhowe.db.connections.Connector;
 import com.jimmyhowe.db.processors.PostProcessor;
-import com.jimmyhowe.db.queries.components.OrderBy;
-import com.jimmyhowe.db.queries.components.Where;
+import com.jimmyhowe.db.queries.components.*;
+import com.jimmyhowe.db.queries.statements.DeleteStatement;
 import com.jimmyhowe.db.queries.statements.SelectStatement;
+import com.jimmyhowe.db.queries.statements.UpdateStatement;
+import com.jimmyhowe.support.stores.KeyValueStore;
+import com.jimmyhowe.support.stores.ObjectStore;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -17,27 +22,43 @@ public class QueryBuilder
     /**
      * Selects
      */
-    public String[] selects = { "*" };
+    public List<String> selects = new ArrayList<>(Arrays.asList("*"));
+
     /**
-     * Where Components
+     * Where Statements
      */
-    public List<Where> wheres = new ArrayList<>();
+    public ObjectStore wheres = new ObjectStore();
+
     /**
      * Order By Components
      */
     public List<OrderBy> orderBys = new ArrayList<>();
+
     /**
      * Limit Component
      */
     public int limit;
+
+    /**
+     * Distinct Select
+     */
+    public boolean distinct = false;
+
+    /**
+     * Update SET Component
+     */
+    public KeyValueStore sets = new KeyValueStore();
+
     /**
      * Database Connector
      */
     private Connector connector;
+
     /**
      * Post Processor
      */
     private PostProcessor postProcessor;
+
     /**
      * Table Name
      */
@@ -80,7 +101,7 @@ public class QueryBuilder
      */
     public String get(String... columns)
     {
-        this.selects = columns;
+        this.selects = new ArrayList<>(Arrays.asList(columns));
 
         return this.get();
     }
@@ -102,7 +123,7 @@ public class QueryBuilder
      */
     public String first(String... columns)
     {
-        this.selects = columns;
+        this.selects = new ArrayList<>(Arrays.asList(columns));
 
         return this.first();
     }
@@ -129,14 +150,96 @@ public class QueryBuilder
     }
 
     /**
+     * Selects Builder
+     *
+     * @return
+     */
+    public QueryBuilder select()
+    {
+        this.selects = new ArrayList<>(Arrays.asList("*"));
+
+        return this;
+    }
+
+    /**
+     * Selects Builder
+     *
+     * @return
+     */
+    public QueryBuilder select(String... columns)
+    {
+        this.selects = new ArrayList<>(Arrays.asList(columns));
+
+        return this;
+    }
+
+    /**
+     * @param raw Raw SQL Statement
+     *
+     * @return Query Builder
+     */
+    public QueryBuilder select(Expression... raw)
+    {
+        this.selects = new ArrayList<>();
+
+        for ( int i = 0; i < raw.length; i++ )
+        {
+            this.selects.add(raw[i].toString());
+        }
+
+        return this;
+    }
+
+    /**
+     * @param raw Raw Expression
+     *
+     * @return Query Builder
+     */
+    public QueryBuilder addSelect(Expression raw)
+    {
+        this.selects.add(raw.toString());
+
+        return this;
+    }
+
+    /**
      * Where Statement
      *
      * @param column Column name
      * @param value  Value
+     *
+     * @return Query Builder
+     */
+    public QueryBuilder where(String column, String operator, Object value)
+    {
+        this.wheres.put(new WhereGroup(new Where(column, operator, value)));
+
+        return this;
+    }
+
+    /**
+     * Where Statement
+     *
+     * @param column Column name
+     * @param value  Value
+     *
+     * @return Query Builder
      */
     public QueryBuilder where(String column, Object value)
     {
-        this.wheres.add(new Where(column, value));
+        this.wheres.put(new WhereGroup(new Where(column, value)));
+
+        return this;
+    }
+
+    /**
+     * @param wheres Multiple Where Statements
+     *
+     * @return Query Builder
+     */
+    public QueryBuilder where(Where... wheres)
+    {
+        this.wheres.put(new WhereGroup(wheres));
 
         return this;
     }
@@ -144,25 +247,92 @@ public class QueryBuilder
     /**
      * Where Not Statement
      *
-     * @param column    Column name
-     * @param value     Value
+     * @param column Column name
+     * @param value  Value
+     *
+     * @return Query Builder
      */
-    public QueryBuilder whereNot(String column, Object value)
+    public QueryBuilder whereNot(String column, String value)
     {
-        this.wheres.add(new Where(column, "!=", value));
+        this.wheres.put(new WhereGroup(new Where(column, "!=", value)));
 
         return this;
     }
 
     /**
-     * Where Statement
+     * @param column   Column Name
+     * @param operator Operator
+     * @param value    Value
      *
-     * @param column Column name
-     * @param value  Value
+     * @return Query Builder
      */
-    public QueryBuilder where(String column, String operator, Object value)
+    public QueryBuilder andWhere(String column, String operator, Object value)
     {
-        this.wheres.add(new Where(column, operator, value));
+        this.wheres.put(new AndWhereGroup(new Where(column, operator, value)));
+
+        return this;
+    }
+
+    /**
+     * @param column Column Names
+     * @param value  Value
+     *
+     * @return Query Builder
+     */
+    public QueryBuilder andWhere(String column, Object value)
+    {
+        this.wheres.put(new AndWhereGroup(new Where(column, value)));
+
+        return this;
+    }
+
+    /**
+     * @param wheres Where Statements
+     *
+     * @return Query Builder
+     */
+    public QueryBuilder andWhere(Where... wheres)
+    {
+        this.wheres.put(new AndWhereGroup(wheres));
+
+        return this;
+    }
+
+    /**
+     * @param column   Column Name
+     * @param operator Operator
+     * @param value    Value
+     *
+     * @return
+     */
+    public QueryBuilder orWhere(String column, String operator, Object value)
+    {
+        this.wheres.put(new OrWhereGroup(new Where(column, operator, value)));
+
+        return this;
+    }
+
+    /**
+     * @param column Column Name
+     * @param value  Value
+     *
+     * @return
+     */
+    public QueryBuilder orWhere(String column, Object value)
+    {
+        this.wheres.put(new OrWhereGroup(new Where(column, value)));
+
+        return this;
+    }
+
+    /**
+     * @param wheres Where Statements
+     *
+     * @return Query Builder
+     */
+    public QueryBuilder orWhere(Where... wheres)
+    {
+        this.wheres.put(new OrWhereGroup(wheres));
 
         return this;
     }
@@ -198,5 +368,58 @@ public class QueryBuilder
     public QueryBuilder orderByDesc(String column)
     {
         return this.orderBy(column, "DESC");
+    }
+
+    /**
+     * Distinct Select
+     *
+     * @return QueryBuilder
+     */
+    public QueryBuilder distinct()
+    {
+        this.distinct = true;
+
+        return this;
+    }
+
+    /**
+     * @param column Column Name
+     * @param value  Value
+     *
+     * @return QueryBuilder Instance
+     */
+    public QueryBuilder set(String column, java.io.Serializable value)
+    {
+        this.sets.add(column, value);
+
+        return this;
+    }
+
+    /**
+     * @return UpdateStatement
+     */
+    public String update()
+    {
+        return new UpdateStatement(this.connector, this, this.postProcessor).toSql();
+    }
+
+    /**
+     * @return DeleteStatement
+     */
+    public String delete()
+    {
+        return new DeleteStatement(this.connector, this, this.postProcessor).toSql();
+    }
+
+    /**
+     * @param limit Amount to Limit
+     *
+     * @return Query Builder
+     */
+    public QueryBuilder limit(int limit)
+    {
+        this.limit = limit;
+
+        return this;
     }
 }

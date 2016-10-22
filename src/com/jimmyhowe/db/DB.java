@@ -7,41 +7,64 @@ import com.jimmyhowe.db.processors.TableProcessor;
 import com.jimmyhowe.db.queries.QueryBuilder;
 import com.jimmyhowe.db.tables.Table;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * DB Facade
  */
 public class DB
 {
+    /**
+     * DB Connection
+     */
     private static Connector connector;
 
+    /**
+     * SQL Adapter
+     */
     private static Adapter adapter;
 
-    private static PostProcessor postProcessor;
+    /**
+     * Post Processor
+     */
+    private static PostProcessor postProcessor = new TableProcessor();
+
+    /**
+     * SQL Log
+     */
+    private static List<String> log = new ArrayList<>();
 
     /**
      * Set the Connection Adapter
      *
-     * @param adapter
+     * @param adapter Adapter
      */
     public static void connectWith(Adapter adapter)
     {
         DB.adapter = adapter;
+
+        connector = new Connector(DB.adapter);
     }
 
     /**
      * Table Object
      *
-     * @param table
+     * @param table Table name
+     *
+     * @return Table
      */
     public static Table table(String table)
     {
-        return new Table(table, new Connector(adapter), new TableProcessor());
+        return new Table(table, new Connector(adapter), postProcessor);
     }
 
     /**
      * Returns Query builder object
      *
-     * @param table
+     * @param table Table name
+     *
+     * @return Query Builder
      */
     public static QueryBuilder query(String table)
     {
@@ -51,7 +74,7 @@ public class DB
     /**
      * Return the Connector
      *
-     * @return
+     * @return Connection
      */
     public static Connector getConnector()
     {
@@ -59,9 +82,9 @@ public class DB
     }
 
     /**
-     * Get Post Processor
+     * Return Post Processor
      *
-     * @return
+     * @return Post Processor
      */
     public static PostProcessor getPostProcessor()
     {
@@ -71,10 +94,40 @@ public class DB
     /**
      * Set the Post Processor
      *
-     * @param postProcessor
+     * @param postProcessor Post Processor
      */
     public static void setPostProcessor(PostProcessor postProcessor)
     {
         DB.postProcessor = postProcessor;
+    }
+
+    /**
+     * Log a query
+     *
+     * @param message Log Message
+     */
+    public static void log(String message)
+    {
+        log.add(message);
+    }
+
+    /**
+     * Return the query log
+     *
+     * @return The query log
+     */
+    public static List<String> queryLog()
+    {
+        return log;
+    }
+
+    /**
+     * @param sql SQL String
+     *
+     * @return Raw SQL Expression
+     */
+    public static Expression raw(String sql)
+    {
+        return connector.raw(sql);
     }
 }

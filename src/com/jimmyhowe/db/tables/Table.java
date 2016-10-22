@@ -6,16 +6,30 @@ import com.jimmyhowe.db.processors.PostProcessor;
 import com.jimmyhowe.db.queries.QueryBuilder;
 import com.jimmyhowe.db.queries.components.OrderBy;
 import com.jimmyhowe.db.queries.components.Where;
+import com.jimmyhowe.db.queries.components.WhereGroup;
 import com.jimmyhowe.db.queries.statements.SelectStatement;
-import com.jimmyhowe.db.tables.rows.RowCollection;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Table
  */
 public class Table
 {
+    /**
+     * Database Connection
+     */
     private final Connector connector;
+
+    /**
+     * Query Builder Object
+     */
     private final QueryBuilder queryBuilder;
+
+    /**
+     * Post Processor
+     */
     private PostProcessor postProcessor;
 
     /**
@@ -23,7 +37,7 @@ public class Table
      *
      * @param table         Table name
      * @param connector     Connector
-     * @param postProcessor Post Proccessor
+     * @param postProcessor Post Processor
      */
     public Table(String table, Connector connector, PostProcessor postProcessor)
     {
@@ -45,9 +59,11 @@ public class Table
     }
 
     /**
-     * Get
+     * Get Collection
      *
-     * @return Returns Results
+     * @param <T> Return type
+     *
+     * @return T
      */
     public <T> T get()
     {
@@ -57,17 +73,24 @@ public class Table
     /**
      * Get with Columns
      *
-     * @param columns Columns to get
+     * @param columns Column Names
+     * @param <T>     Return Type
+     *
+     * @return T
      */
     public <T> T get(String... columns)
     {
-        this.queryBuilder.selects = columns;
+        this.queryBuilder.selects = new ArrayList<>(Arrays.asList(columns));
 
         return this.get();
     }
 
     /**
      * Get the First Record
+     *
+     * @param <T> Return type
+     *
+     * @return T
      */
     public <T> T first()
     {
@@ -80,10 +103,13 @@ public class Table
      * First with Column Names
      *
      * @param columns Column names
+     * @param <T>     Return type
+     *
+     * @return T
      */
-    public String first(String... columns)
+    public <T> T first(String... columns)
     {
-        this.queryBuilder.selects = columns;
+        this.queryBuilder.selects = new ArrayList<>(Arrays.asList(columns));
 
         return this.first();
     }
@@ -93,6 +119,9 @@ public class Table
      *
      * @param primaryKey Primary key
      * @param column     Column name
+     * @param <T>        Return Type
+     *
+     * @return T
      */
     public <T> T list(String primaryKey, String column)
     {
@@ -100,9 +129,12 @@ public class Table
     }
 
     /**
-     * Return a list of ID, and Column Name
+     * List
      *
-     * @param column Column name
+     * @param column Column Name
+     * @param <T>    Return type
+     *
+     * @return T
      */
     public <T> T list(String column)
     {
@@ -111,44 +143,57 @@ public class Table
 
     /**
      * Where Statement
-     *  @param column Column name
+     *
+     * @param column Column name
      * @param value  Value
+     *
+     * @return Table
      */
     public Table where(String column, Object value)
     {
-        this.queryBuilder.wheres.add(new Where(column, value));
+        this.queryBuilder.wheres.put(new WhereGroup(new Where(column, value)));
 
         return this;
     }
 
     /**
      * Where Not Statement
-     *  @param column Column name
+     *
+     * @param column Column name
      * @param value  Value
+     *
+     * @return Table
      */
     public Table whereNot(String column, Object value)
     {
-        this.queryBuilder.wheres.add(new Where(column, "!=", value));
+        this.queryBuilder.wheres.put(new WhereGroup(new Where(column, "!=", value)));
 
         return this;
     }
 
     /**
      * Where Statement
-     *  @param column Column name
-     * @param value  Value
+     *
+     * @param column   Column name
+     * @param operator Operator
+     * @param value    Value
+     *
+     * @return Table
      */
     public Table where(String column, String operator, Object value)
     {
-        this.queryBuilder.wheres.add(new Where(column, operator, value));
+        this.queryBuilder.wheres.put(new WhereGroup(new Where(column, operator, value)));
 
         return this;
     }
 
     /**
      * Order By
-     *  @param column    Column name
+     *
+     * @param column    Column name
      * @param direction Direction
+     *
+     * @return Table
      */
     public Table orderBy(String column, String direction)
     {
@@ -161,6 +206,8 @@ public class Table
      * Order By Asc
      *
      * @param column Column name
+     *
+     * @return Table
      */
     public Table orderBy(String column)
     {
@@ -171,6 +218,8 @@ public class Table
      * Order By Desc
      *
      * @param column Column name
+     *
+     * @return Table
      */
     public Table orderByDesc(String column)
     {

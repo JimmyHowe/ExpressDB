@@ -5,21 +5,31 @@ import com.jimmyhowe.support.collections.GeneralisedCollection;
 import java.sql.ResultSet;
 
 /**
- * Created by Jimmy on 23/08/2016.
+ * Abstract Post Processor
+ *
+ * The Post Processor is used to process the results of the ResultSet into a single object
+ * or a collection of objects for multiple rows.
+ *
+ * @param <S>    Single Row Object
+ * @param <C>    Collection Object
  */
 public abstract class PostProcessor<S, C extends GeneralisedCollection<S>>
 {
     /**
-     * Get Single
+     * Returns a single record
      *
-     * @param resultSet
+     * @param resultSet Result Set
+     *
+     * @return Single Instance
      */
     public abstract S single(ResultSet resultSet);
 
     /**
-     * Get Collection
+     * Returns a collection of records
      *
-     * @param resultSet
+     * @param resultSet Result Set
+     *
+     * @return Collection Instance
      */
     public abstract C collection(ResultSet resultSet);
 }

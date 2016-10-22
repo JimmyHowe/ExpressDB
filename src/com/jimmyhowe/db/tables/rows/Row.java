@@ -1,7 +1,7 @@
 package com.jimmyhowe.db.tables.rows;
 
 import com.jimmyhowe.db.tables.columns.Column;
-import com.jimmyhowe.db.tables.columns.ColumnCollection;
+import com.jimmyhowe.db.tables.columns.Columns;
 import com.jimmyhowe.support.collections.GeneralisedCollection;
 
 /**
@@ -12,17 +12,17 @@ public class Row extends GeneralisedCollection<Column>
     /**
      * Build with Column Collection
      *
-     * @param columnCollection
+     * @param columns Columns
      */
-    public Row(ColumnCollection columnCollection)
+    public Row(Columns columns)
     {
-        this.data.addAll(columnCollection.data());
+        this.data.addAll(columns.data());
     }
 
     /**
      * Return Column by Field
      *
-     * @param field
+     * @param field Field Name
      */
     public Column column(String field)
     {
@@ -32,13 +32,13 @@ public class Row extends GeneralisedCollection<Column>
     /**
      * Find by Field
      *
-     * @param field
+     * @param field Field Name
      */
     private Column findByField(String field)
     {
         for ( int i = 0; i < this.data().size(); i++ )
         {
-            if( this.data(i).getField().equals(field) )
+            if ( this.data(i).getField().equals(field) )
             {
                 return this.data(i);
             }
@@ -49,17 +49,18 @@ public class Row extends GeneralisedCollection<Column>
 
     /**
      * Returns data as Column Collection
-     *
-     * @return
      */
-    public ColumnCollection columns()
+    public Columns columns()
     {
-        return new ColumnCollection(this.data());
+        return new Columns(this.data());
     }
 
+    /**
+     * @return Returns Row as String
+     */
     @Override
     public String toString()
     {
-        return "" + data;
+        return data.toString();
     }
 }
