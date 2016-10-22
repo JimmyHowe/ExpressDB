@@ -1,20 +1,19 @@
-# Database
-Java Database Package
+# ExpressDB
 
-Provides fluent interface around the JCDB Driver
+Provides fluent interface around the JDBC Driver
 
-Set the DB Connection
+##### Set the DB Connection
     
     DB.connectWith(new MySQLAdapter("db_name"))
 
-Getting single records
+##### Getting single records
 
     Row firstUser = DB.table("users").first();
 
-Getting collections
+##### Getting collections
 
     Rows allUsers = DB.table("users").get();
     
-Complex Queries
+##### Complex Queries
     
     Rows allUsers = DB.table("users").where("status", "=", "active").orderBy("popularity").get();
