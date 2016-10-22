@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="ExpressDB:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/ExpressDB_jar</output-path>
+    <root id="archive" name="ExpressDB.jar">
+      <element id="module-output" name="ExpressDB" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../Support/out/artifacts/Support_jar/Support.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../Libraries/mysql-connector-java-5.1.38/mysql-connector-java-5.1.38-bin.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
