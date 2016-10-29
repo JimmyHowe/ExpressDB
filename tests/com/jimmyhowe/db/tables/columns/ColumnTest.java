@@ -13,13 +13,16 @@ public class ColumnTest
 
     public ColumnTest()
     {
-        this.column = new Column("test_field", "INT", 1, Integer.class);
+        this.column = new Column("id", "INT", 1, Integer.class);
+        this.column.isUnsigned(true);
+        this.column.isAutoIncrement(true);
+        this.column.isPrimaryKey(true);
     }
 
     @Test
     public void getField() throws Exception
     {
-        assertEquals("test_field", this.column.getField());
+        assertEquals("id", this.column.getField());
     }
 
     @Test
@@ -33,5 +36,11 @@ public class ColumnTest
     public void getValue() throws Exception
     {
         assertEquals(1, this.column.getValue());
+    }
+
+    @Test
+    public void it_can_return_to_sql_string() throws Exception
+    {
+        assertEquals("id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY", this.column.toSql());
     }
 }

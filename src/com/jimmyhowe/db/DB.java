@@ -40,11 +40,11 @@ public class DB
      *
      * @param adapter Adapter
      */
-    public static void connectWith(Adapter adapter)
+    public static Connector connectWith(Adapter adapter)
     {
         DB.adapter = adapter;
 
-        connector = new Connector(DB.adapter);
+        return connector = new Connector(DB.adapter);
     }
 
     /**

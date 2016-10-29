@@ -1,11 +1,13 @@
 package com.jimmyhowe.db.tables.columns;
 
+import com.jimmyhowe.db.contracts.Sqlable;
+
 import java.util.Map;
 
 /**
  * Column
  */
-public class Column
+public class Column implements Sqlable
 {
     private Object TYPE;
 
@@ -16,6 +18,12 @@ public class Column
     private Object value;
 
     private Class castType;
+
+    private boolean isUnsigned;
+
+    private boolean isAutoIncrement;
+
+    private boolean primaryKey;
 
     public Column()
     {
@@ -85,6 +93,62 @@ public class Column
     public void use(Map<String, Class> TYPE)
     {
         this.TYPE = TYPE;
+    }
+
+    public void isUnsigned(boolean isUnsigned)
+    {
+        this.isUnsigned = isUnsigned;
+    }
+
+    public void isAutoIncrement(boolean isAutoIncrement)
+    {
+        this.isAutoIncrement = isAutoIncrement;
+    }
+
+    public void isPrimaryKey(boolean primaryKey)
+    {
+        this.primaryKey = primaryKey;
+    }
+
+    public boolean isUnsigned()
+    {
+        return isUnsigned;
+    }
+
+    public boolean isAutoIncrement()
+    {
+        return isAutoIncrement;
+    }
+
+    public boolean isPrimaryKey()
+    {
+        return primaryKey;
+    }
+
+    /**
+     * @return SQL Statement / Fragment
+     */
+    @Override
+    public String toSql()
+    {
+        String sql = this.getField() + " " + this.getSqlType();
+
+        if(this.isUnsigned)
+        {
+            sql += " " + "UNSIGNED";
+        }
+
+        if(this.isAutoIncrement)
+        {
+            sql += " " + "AUTO_INCREMENT";
+        }
+
+        if(this.isUnsigned)
+        {
+            sql += " " + "PRIMARY KEY";
+        }
+
+        return sql;
     }
 
     @Override
