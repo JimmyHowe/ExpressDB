@@ -5,6 +5,7 @@ import com.jimmyhowe.db.connections.Connector;
 import com.jimmyhowe.db.processors.PostProcessor;
 import com.jimmyhowe.db.queries.components.*;
 import com.jimmyhowe.db.queries.statements.DeleteStatement;
+import com.jimmyhowe.db.queries.statements.InsertStatement;
 import com.jimmyhowe.db.queries.statements.SelectStatement;
 import com.jimmyhowe.db.queries.statements.UpdateStatement;
 import com.jimmyhowe.support.stores.KeyValueStore;
@@ -421,5 +422,12 @@ public class QueryBuilder
         this.limit = limit;
 
         return this;
+    }
+
+    public InsertStatement insertInto(String... columns)
+    {
+        this.selects = new ArrayList<>(Arrays.asList(columns));
+
+        return new InsertStatement(this.connector, this, this.postProcessor);
     }
 }

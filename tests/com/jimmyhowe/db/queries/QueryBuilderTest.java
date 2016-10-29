@@ -262,4 +262,13 @@ public class QueryBuilderTest
 
         assertEquals(expected, actual);
     }
+
+    @Test
+    public void it_can_generate_an_insert_statement() throws Exception
+    {
+        String expected = "INSERT INTO test (name) VALUES ('Jimmy')";
+        Object actual = this.queryBuilder.insertInto("name").values("Jimmy");
+
+        assertEquals(expected, actual);
+    }
 }
