@@ -8,13 +8,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Jimmy on 29/10/2016.
+ * Schema Builder
+ *
+ * Builds the columns schema for table blueprints
  */
 public class SchemaBuilder implements Sqlable
 {
+    /**
+     * Columns
+     */
     private List<Column> columns = new ArrayList<>();
-
-    private Column currentColumn;
 
     /**
      * Create a new auto-incrementing integer (4-byte) column on the table.
@@ -26,11 +29,20 @@ public class SchemaBuilder implements Sqlable
         this.unsignedInteger(name, true);
     }
 
+    /**
+     * @param name           The name of the field to create
+     * @param autoIncrements Do you want to autoIncrement this field?
+     */
     private void unsignedInteger(String name, boolean autoIncrements)
     {
         this.integer(name, autoIncrements, true);
     }
 
+    /**
+     * @param name           Name of the field to create
+     * @param autoIncrements Auto increment
+     * @param unsigned       unsigned?
+     */
     private void integer(String name, boolean autoIncrements, boolean unsigned)
     {
         Column column = new Column(name, "INT", null, Integer.class);
@@ -41,11 +53,18 @@ public class SchemaBuilder implements Sqlable
         this.columns.add(column);
     }
 
+    /**
+     * @param name
+     * @param length
+     */
     public void string(String name, int length)
     {
         this.columns.add(new Column(name, "VARCHAR(" + length + ")", null, String.class));
     }
 
+    /**
+     * @param name
+     */
     public void string(String name)
     {
         this.string(name, 255);
@@ -62,6 +81,11 @@ public class SchemaBuilder implements Sqlable
         return Str.toCsv(columns);
     }
 
+    /**
+     * @param columns
+     *
+     * @return
+     */
     private List<String> getColumnsAsString(List<Column> columns)
     {
         List<String> strings = new ArrayList<>();
