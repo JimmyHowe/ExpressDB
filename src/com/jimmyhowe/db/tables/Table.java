@@ -3,12 +3,15 @@ package com.jimmyhowe.db.tables;
 import com.jimmyhowe.db.DB;
 import com.jimmyhowe.db.connections.Connector;
 import com.jimmyhowe.db.processors.PostProcessor;
+import com.jimmyhowe.db.processors.TableProcessor;
 import com.jimmyhowe.db.queries.QueryBuilder;
 import com.jimmyhowe.db.queries.components.OrderBy;
 import com.jimmyhowe.db.queries.components.Where;
 import com.jimmyhowe.db.queries.components.WhereGroup;
 import com.jimmyhowe.db.queries.statements.SelectStatement;
+import com.jimmyhowe.db.tables.rows.Row;
 
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -224,5 +227,25 @@ public class Table
     public Table orderByDesc(String column)
     {
         return this.orderBy(column, "DESC");
+    }
+
+    public boolean exists()
+    {
+        ResultSet results = DB.getConnector().run(
+                DB.query("information_schema.tables")
+                        .select("COUNT(*)")
+                        .where("table_schema", connector.getAdapter().getDatabase())
+                        .andWhere("table_name", queryBuilder.getTableName())
+                        .first()
+        );
+
+        Row row = new TableProcessor().single(results);
+
+        if( (long) row.first().getValue() > 0 )
+        {
+            return true;
+        }
+
+        return false;
     }
 }

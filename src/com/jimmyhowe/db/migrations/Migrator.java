@@ -2,6 +2,8 @@ package com.jimmyhowe.db.migrations;
 
 import com.jimmyhowe.db.DB;
 import com.jimmyhowe.db.connections.adapters.MySQLAdapter;
+import com.jimmyhowe.db.schema.Blueprint;
+import com.jimmyhowe.db.schema.Schema;
 import com.jimmyhowe.support.Str;
 
 import java.util.ArrayList;
@@ -88,5 +90,46 @@ public class Migrator
     private static void log(String message)
     {
         log.add(message);
+    }
+
+    /**
+     * @return If the migrations table exists
+     */
+    public static boolean isInstalled()
+    {
+        return DB.table("migrations").exists();
+    }
+
+    public static void uninstall()
+    {
+        DB.getConnector().run(Schema.drop("migrations"));
+    }
+
+    public static void install()
+    {
+        Migrator.add(new Migration()
+        {
+            @Override
+            public String up()
+            {
+                return Schema.create("migrations", new Blueprint()
+                {
+                    @Override
+                    public void buildTable()
+                    {
+                        table.increments("id");
+                        table.string("class");
+                    }
+                });
+            }
+
+            @Override
+            public String down()
+            {
+                return Schema.drop("migrations");
+            }
+        });
+
+        Migrator.up();
     }
 }
