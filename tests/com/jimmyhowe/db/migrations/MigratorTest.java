@@ -51,7 +51,7 @@ public class MigratorTest
     {
         DB.connectWith(new MySQLAdapter("express_db"));
 
-        if(Migrator.isInstalled())
+        if ( Migrator.isInstalled() )
         {
             Migrator.uninstall();
         }

@@ -1,6 +1,7 @@
 package com.jimmyhowe.db.queries;
 
 import com.jimmyhowe.db.DB;
+import com.jimmyhowe.db.TestCase;
 import com.jimmyhowe.db.queries.components.AndWhere;
 import com.jimmyhowe.db.queries.components.OrWhere;
 import com.jimmyhowe.db.queries.components.Where;
@@ -12,9 +13,14 @@ import static org.junit.Assert.assertEquals;
 /**
  * Created by Jimmy on 09/09/2016.
  */
-public class QueryBuilderTest
+public class QueryBuilderTest extends TestCase
 {
     private QueryBuilder queryBuilder;
+
+    public QueryBuilderTest()
+    {
+        ConnectsWithDatabase();
+    }
 
     @Before
     public void setUp() throws Exception
